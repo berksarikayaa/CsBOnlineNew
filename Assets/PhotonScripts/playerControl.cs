@@ -6,7 +6,7 @@ using Photon.Realtime;
 using Photon.Pun;
 using TMPro;
 
-public class playerControl : MonoBehaviourPunCallbacks
+public class playerControl : MonoBehaviourPunCallbacks, IPunObservable
 {
     Rigidbody rb;
     public PhotonView pV;
@@ -27,7 +27,7 @@ public class playerControl : MonoBehaviourPunCallbacks
         {
             nicknameTxt.text = PhotonNetwork.NickName;
             //setNickname(PhotonNetwork.NickName);
-            pV.RPC("setNickname",RpcTarget.All,PhotonNetwork.NickName);
+            pV.RPC("setNickname",RpcTarget.AllBuffered,PhotonNetwork.NickName);
             
         }
     }
@@ -48,4 +48,30 @@ public class playerControl : MonoBehaviourPunCallbacks
             nicknameTxt.text = nickname;
         }
     }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(PhotonNetwork.NickName);
+        }
+        else
+        {
+            nicknameTxt.text = (string)stream.ReceiveNext();
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player enterPlayer)
+    {
+        if (pV.IsMine)
+        {
+            pV.RPC("setNickname", RpcTarget.AllBuffered, PhotonNetwork.NickName);
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Player leftPlayer)
+    {
+        pV.RPC("setNickname", RpcTarget.AllBuffered, PhotonNetwork.NickName);
+    }
+
 }
