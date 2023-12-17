@@ -17,7 +17,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     
     private void Awake()
     {
-        //nickname var ise onu getirme iþlemlerinin yapýldýðý bölüm
+     
         if (PlayerPrefs.HasKey("nickname"))
         {
             PhotonNetwork.LocalPlayer.NickName = PlayerPrefs.GetString("nickname");
@@ -25,19 +25,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             nickname_input.text = PlayerPrefs.GetString("nickname");
         }
 
-        PhotonNetwork.ConnectUsingSettings(); // varsayýlan ayarlar ile sunucuya baðlanmamýzý saðlar
-        //print("Sunucuya baðlanma iþlemi baþladý...");
+        PhotonNetwork.ConnectUsingSettings(); 
     }
 
-    public override void OnConnectedToMaster() // Ana servera baðlantý kurulduðunda çalýþýr.
+    public override void OnConnectedToMaster() 
     {
-        PhotonNetwork.JoinLobby(); // benim için lobiye baðlantý iþlemlerini baþlatýr.
-        //print("lobiye baðlantý iþlemi baþladý...");
+        PhotonNetwork.JoinLobby(); 
     }
-    public override void OnJoinedLobby() // Lobby baðlantýsý kurulduysa çalýþacak olan kodlar
+    public override void OnJoinedLobby() 
     {
         lobiPanel.SetActive(true);
-        //print("lobiye baðlanýldý..!!!!");
+
     }
     public void createRoom()
     {
@@ -52,7 +50,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                     infoTxt.text = "Oda baþarýyla kuruldu..!";
 
                     PhotonNetwork.CreateRoom(roomName_input.text, new RoomOptions { MaxPlayers = int.Parse(roomMaxUser_input.text), IsVisible = true }, TypedLobby.Default);
-                    //print(roomName_input.text + " odasý oluþturuldu MaxUser: " + roomMaxUser_input.text);
+ 
                 }
                 else
                 {
@@ -69,9 +67,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             infoTxt.text = "Nickname 3 Karakterden kýsa olamaz..!";
         }
     }
-    public override void OnJoinedRoom() // bir odaya katýldýðýmýzda çalýþacak olan kodlar.
+    public override void OnJoinedRoom() 
     {
-        //print("odaya katýlma iþlemi BAÞARILI");
         lobiPanel.SetActive(false);
         charSelectPanel.SetActive(true);
     }
@@ -83,7 +80,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         if (charType == "Lola")
         {
-            GameObject player = PhotonNetwork.Instantiate("LolaPrefab",lolaSpawnPoint.position,Quaternion.identity);
+            GameObject player = PhotonNetwork.Instantiate("PlayerA",lolaSpawnPoint.position,Quaternion.identity);
 
             player.name = PhotonNetwork.NickName;
             charSelectPanel.SetActive(false);
@@ -92,7 +89,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (charType == "Swat")
         {
-            GameObject player = PhotonNetwork.Instantiate("SwatPrefab", swatSpawnPoint.position, Quaternion.identity);
+            GameObject player = PhotonNetwork.Instantiate("PlayerB", swatSpawnPoint.position, Quaternion.identity);
 
             player.name = PhotonNetwork.NickName;
             charSelectPanel.SetActive(false);
@@ -101,14 +98,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     public GameObject odaPanelPrefab;
-    public Transform roomListPanel;// odalarýn odaListPanel içerisinde child obje olarak oluþmasý için
-    // string türde bir key, gameobject türünde bir Value deðeri tutacak. keyi yazdýðým yere value deðerini getirir.
+    public Transform roomListPanel;
     private Dictionary<string, GameObject> odalar = new Dictionary<string, GameObject>();
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         foreach (RoomInfo oda in roomList)
         {
-            // oda daha önce oluþturulmamýþ ise burasý çalýþacak
+   
             if (!odalar.ContainsKey(oda.Name))
             {
                 print("Oda Oluþturuldu: " + oda.Name + " Odadaki Kiþi Sayýsý: " + oda.PlayerCount);
@@ -119,7 +115,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
                 odalar.Add(oda.Name, odaPrefab);
             }
-            // oda daha önce oluþturulmuþ ise burasý çalýþacak
+
             else
             {
                 print("oda daha önce varmýþ   " + oda.Name);
