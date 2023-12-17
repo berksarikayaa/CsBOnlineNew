@@ -14,7 +14,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_InputField roomMaxUser_input;
     [SerializeField] TMP_InputField nickname_input;
     [SerializeField] TMP_Text infoTxt;
-    
+    [Header("CharSelect Ayarlar")]
+    [SerializeField] Transform lolaSpawnPoint;
+    [SerializeField] Transform swatSpawnPoint;
+    public GameObject odaPanelPrefab;
+    public Transform roomListPanel;
+    private Dictionary<string, GameObject> odalar = new Dictionary<string, GameObject>();
+
     private void Awake()
     {
      
@@ -73,9 +79,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         charSelectPanel.SetActive(true);
     }
 
-    [Header("CharSelect Ayarlar")]
-    [SerializeField] Transform lolaSpawnPoint;
-    [SerializeField] Transform swatSpawnPoint;
+
     public void charSelect(string charType)
     {
         if (charType == "Lola")
@@ -84,7 +88,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             player.name = PhotonNetwork.NickName;
             charSelectPanel.SetActive(false);
-            print("Lola Karakter Oluþturuldu.");
         }
 
         if (charType == "Swat")
@@ -93,13 +96,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
             player.name = PhotonNetwork.NickName;
             charSelectPanel.SetActive(false);
-            print("Swat Karakter Oluþturuldu.");
         }
     }
 
-    public GameObject odaPanelPrefab;
-    public Transform roomListPanel;
-    private Dictionary<string, GameObject> odalar = new Dictionary<string, GameObject>();
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         foreach (RoomInfo oda in roomList)

@@ -22,9 +22,30 @@ public class playerControl : MonoBehaviourPunCallbacks
         rb = GetComponent<Rigidbody>();
         pV = GetComponent<PhotonView>();
         nicknameTxt = GetComponentInChildren<TextMeshProUGUI>();
+
+        if (pV.IsMine)
+        {
+            nicknameTxt.text = PhotonNetwork.NickName;
+            //setNickname(PhotonNetwork.NickName);
+            pV.RPC("setNickname",RpcTarget.All,PhotonNetwork.NickName);
+            
+        }
     }
+
     void Movement()
     {
 
+    }
+    
+    
+    
+    [PunRPC]
+    void setNickname(string nickname)
+    {
+        if(nicknameTxt != null)
+        {
+            this.gameObject.name = nickname + "_Player";
+            nicknameTxt.text = nickname;
+        }
     }
 }
